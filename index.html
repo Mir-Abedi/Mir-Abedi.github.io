@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en", id="wholebody">
+<html lang="en", id="wholebody", onclick="clicked()">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,11 +35,17 @@ var lang = {
   for (let i = 0; i < 5; i++) {
   document.getElementById("skill" + (i + 1)).style.color = "black";
   } 
+  document.getElementById("skillsSection1").style.display = "none";
+  document.getElementById("profile1").style.display = "none";
+  document.getElementById("about").style.display = "initial";
+  document.getElementById("experience").style.display = "initial";
+  document.getElementById("skills").style.display = "initial";
+  
 }
 </script>
 
 </head>
-<body, onclick="clicked()">
+<body>
     <header>
         <h1>Amirhossein Abedi</h1>
         <br>
@@ -52,7 +58,7 @@ var lang = {
             </ul>
         </nav>
     </header>
-    <section id="about">
+    <section id="about", style="display: none;">
         <div class="container">
             <h2>About Me</h2>
             <br>
@@ -119,7 +125,7 @@ var lang = {
           </ul>
     </section>
 
-    <section id="experience">
+    <section id="experience", style="display: none;">
         <div class="container">
             <h2>Experience & Interests</h2>
             <br>
@@ -130,7 +136,7 @@ var lang = {
             <p>I began pursuing machine learning to build models and automate tasks which are even hard for humans.</p>
         </div>
     </section>
-    <section id="skills">
+    <section id="skills", style="display: none;">
         <div class="container">
             <h2>Skills</h2>
             <br>
@@ -140,6 +146,62 @@ var lang = {
         </div>
     </section>
 
+    <ul class="skills-bar-container1", id="skillsSection1">
+  
+      <li>
+        <div class="progressbar-title">
+          <h3, id="skill1">python</h3>
+          <span class="percent" id="html-pourcent"></span>
+        </div>
+        <div class="bar-container">
+          <span class="progressbar progressred" id="progress-html"></span>
+        </div>
+      </li>
+      <li>
+        <div class="progressbar-title">
+          <h3, id="skill2">Java</h3>
+          <span class="percent" id="css-pourcent"></span>
+        </div>
+        <div class="bar-container">
+          <span class="progressbar progressblue" id="progress-css"></span>
+        </div>
+      </li>
+      
+      <li>
+        <div class="progressbar-title">
+          <h3, id="skill3">R</h3>
+          <span class="percent" id="javascript-pourcent"></span>
+        </div>
+        <div class="bar-container">
+          <span class="progressbar progresspurple" id="progress-javascript"></span>
+        </div>
+      </li>
+      
+      <li>
+        <div class="progressbar-title">
+          <h3, id="skill4">Team work</h3>
+          <span class="percent" id="php-pourcent"></span>
+        </div>
+        <div class="bar-container">
+          <span class="progressbar progressorange" id="progress-php"></span>
+        </div>
+      </li>
+      
+      <li>
+        <div class="progressbar-title">
+          <h3, id="skill5">Hard-working</h3>
+          <span class="percent" id="angular-pourcent"></span>
+        </div>
+        <div class="bar-container">
+          <span class="progressbar progressgreen" id="progress-angular"></span>
+        </div>
+      </li>
+      
+    </ul>
+
+    <div class="profile1", id="profile1">
+      <img src="amir.jpg" alt="Amirhossein (Me)">
+  </div>
     <footer>
         <p>&copy; 2024 Amirhossein Abedi</p>
     </footer>

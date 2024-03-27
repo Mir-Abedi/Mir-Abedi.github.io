@@ -51,6 +51,21 @@ nav ul li a {
     margin-right: 20px;
 }
 
+.profile1 {
+  display: flex;
+  align-items: center;
+}
+
+.profile1 img {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  top: 40%;
+  left: 30%;
+
+}
+
 .personal-info {
     flex-grow: 1;
 }
@@ -80,7 +95,7 @@ $purple: #9b59b6;
 $orange: #ffa500;
 $green: #27ae60;
 
-$animation-delay: .7s;
+$animation-delay: .05s;
 
 @mixin border-radius($radius){
   -webkit-border-radius: $radius;
@@ -110,7 +125,6 @@ html,body{
   width: 10%;
   min-width: 100px;
   top: 50%;
-  left: 50%;
   left: 90%;
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
@@ -150,8 +164,97 @@ html,body{
         height: 100%;
         @include border-radius(5px);
 
-        -webkit-animation-duration: 2s;
-        animation-duration: 2s;
+        -webkit-animation-duration: 0.5s;
+        animation-duration: 0.5s;
+        -webkit-animation-timing-function: ease-out;
+        animation-timing-function: ease-out;
+        -webkit-animation-fill-mode: both;
+        animation-fill-mode: both;
+      }
+      #progress-html{
+        -webkit-animation-name: progress-html;
+        animation-name: progress-html;
+        -webkit-animation-delay: $animation-delay;
+        animation-delay: $animation-delay;
+      }
+
+      #progress-css{
+        -webkit-animation-name: progress-css;
+        animation-name: progress-css;
+        -webkit-animation-delay: $animation-delay*2;
+        animation-delay: $animation-delay*2;
+      }
+
+      #progress-javascript{
+        -webkit-animation-name: progress-javascript;
+        animation-name: progress-javascript;
+        -webkit-animation-delay:$animation-delay*3;
+        animation-delay: $animation-delay*3;
+      }
+
+      #progress-php{
+        -webkit-animation-name: progress-php;
+        animation-name: progress-php;
+        -webkit-animation-delay: $animation-delay*4;
+        animation-delay: $animation-delay*4;
+      }
+
+      #progress-angular{
+        -webkit-animation-name: progress-angular;
+        animation-name: progress-angular;
+        -webkit-animation-delay: $animation-delay*5;
+        animation-delay: $animation-delay*5;
+      }
+    }// end bar-container
+  }
+}
+
+.skills-bar-container1{
+  position: absolute;
+  width: 10%;
+  min-width: 100px;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  list-style:none;
+  text-emphasis-color: $green;
+  
+  li{
+    position: relative;
+    width: 100%;
+    padding: $li-padding;
+    margin-bottom: 10px;
+    
+    .progressbar-title{
+      color: $progressbar-title-color;
+      
+      h3{
+        display: inline-block;
+      }
+      .percent{
+        position: absolute;
+        right: $li-padding;
+      }
+    }// end progressbar-title
+    
+    .bar-container{
+      background: #555;
+      position: relative;
+      width: 100%;
+      height: 5px;
+      margin-top: 5px;
+      display: block;
+      @include border-radius(5px);
+      
+      .progressbar{
+        position:absolute;
+        width:0%;
+        height: 100%;
+        @include border-radius(5px);
+
+        -webkit-animation-duration: 1s;
+        animation-duration: 1s;
         -webkit-animation-timing-function: ease-out;
         animation-timing-function: ease-out;
         -webkit-animation-fill-mode: both;
