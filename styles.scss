@@ -59,7 +59,9 @@ footer {
     background-color: #333; 
     color: #fff;
     text-align: center;
-    padding: 10px 0;
+    position: absolute;
+    width: 100%;
+    bottom: 0%;
 }
 
 @import url(https://fonts.googleapis.com/css?family=PT+Sans);
@@ -104,7 +106,7 @@ html,body{
 }
 
 .skills-bar-container{
-  position: relative;
+  position: absolute;
   width: 10%;
   min-width: 100px;
   top: 50%;
@@ -200,19 +202,19 @@ html,body{
 .progressgreen{background-color:$green;}
 
 @-webkit-keyframes progress-html{0%{width: 0%;} 100%{ width: 100%;}}
-@-webkit-keyframes progress-css{0%{width: 0%;} 100%{ width: 90%;}}
-@-webkit-keyframes progress-javascript{0%{width: 0%;} 100%{ width: 70%;}}
-@-webkit-keyframes progress-php{0%{width: 0%;} 100%{ width: 55%;}}
-@-webkit-keyframes progress-angular{0%{width: 0%;} 100%{ width: 65%;}}
+@-webkit-keyframes progress-css{0%{width: 0%;} 100%{ width: 100%;}}
+@-webkit-keyframes progress-javascript{0%{width: 0%;} 100%{ width: 80%;}}
+@-webkit-keyframes progress-php{0%{width: 0%;} 100%{ width: 100%;}}
+@-webkit-keyframes progress-angular{0%{width: 0%;} 100%{ width: 100%;}}
 
 @-moz-keyframes progress-html{0%{width: 0%;} 100%{ width: 100%;}}
-@-moz-keyframes progress-css{0%{width: 0%;} 100%{ width: 90%;}}
-@-moz-keyframes progress-javascript{0%{width: 0%;} 100%{ width: 70%;}}
-@-moz-keyframes progress-php{0%{width: 0%;} 100%{ width: 55%;}}
-@-moz-keyframes progress-angular{0%{width: 0%;} 100%{ width: 65%;}}
+@-moz-keyframes progress-css{0%{width: 0%;} 100%{ width: 100%;}}
+@-moz-keyframes progress-javascript{0%{width: 0%;} 100%{ width: 80%;}}
+@-moz-keyframes progress-php{0%{width: 0%;} 100%{ width: 100%;}}
+@-moz-keyframes progress-angular{0%{width: 0%;} 100%{ width: 100%;}}
 
 @keyframes progress-html{0%{width: 0%;} 100%{ width: 100%;}}
-@keyframes progress-css{0%{width: 0%;} 100%{ width: 90%;}}
-@keyframes progress-javascript{0%{width: 0%;} 100%{ width: 70%;}}
-@keyframes progress-php{0%{width: 0%;} 100%{ width: 55%;}}
-@keyframes progress-angular{0%{width: 0%;} 100%{ width: 65%;}}
+@keyframes progress-css{0%{width: 0%;} 100%{ width: 100%;}}
+@keyframes progress-javascript{0%{width: 0%;} 100%{ width: 80%;}}
+@keyframes progress-php{0%{width: 0%;} 100%{ width: 100%;}}
+@keyframes progress-angular{0%{width: 0%;} 100%{ width: 100%;}}
