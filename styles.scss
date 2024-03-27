@@ -1,0 +1,218 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+nav ul {
+    list-style-type: none;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+}
+
+.profile img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.personal-info {
+    flex-grow: 1;
+}
+
+footer {
+    background-color: #333; 
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+}
+
+@import url(https://fonts.googleapis.com/css?family=PT+Sans);
+
+$font-family: 'PT Sans', sans-serif;
+
+$li-padding: 5px;
+
+// colors
+$background-color: #1a1a1a;
+$progressbar-title-color: #fff;
+
+$red: #c0392b;
+$blue: #1199ff;
+$purple: #9b59b6;
+$orange: #ffa500;
+$green: #27ae60;
+
+$animation-delay: .7s;
+
+@mixin border-radius($radius){
+  -webkit-border-radius: $radius;
+     -moz-border-radius: $radius;
+      -ms-border-radius: $radius;
+          border-radius: $radius;
+}
+
+*,
+*:before,
+*:after{
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+html,body{
+  background: $background-color;
+  width: 100%;
+  height: 100%;
+  font-family: $font-family;
+}
+
+.skills-bar-container{
+  position: relative;
+  width: 10%;
+  min-width: 100px;
+  top: 50%;
+  left: 50%;
+  left: 90%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  list-style:none;
+  text-emphasis-color: $green;
+  
+  li{
+    position: relative;
+    width: 100%;
+    padding: $li-padding;
+    margin-bottom: 10px;
+    
+    .progressbar-title{
+      color: $progressbar-title-color;
+      
+      h3{
+        display: inline-block;
+      }
+      .percent{
+        position: absolute;
+        right: $li-padding;
+      }
+    }// end progressbar-title
+    
+    .bar-container{
+      background: #555;
+      position: relative;
+      width: 100%;
+      height: 5px;
+      margin-top: 5px;
+      display: block;
+      @include border-radius(5px);
+      
+      .progressbar{
+        position:absolute;
+        width:0%;
+        height: 100%;
+        @include border-radius(5px);
+
+        -webkit-animation-duration: 2s;
+        animation-duration: 2s;
+        -webkit-animation-timing-function: ease-out;
+        animation-timing-function: ease-out;
+        -webkit-animation-fill-mode: both;
+        animation-fill-mode: both;
+      }
+      #progress-html{
+        -webkit-animation-name: progress-html;
+        animation-name: progress-html;
+        -webkit-animation-delay: $animation-delay;
+        animation-delay: $animation-delay;
+      }
+
+      #progress-css{
+        -webkit-animation-name: progress-css;
+        animation-name: progress-css;
+        -webkit-animation-delay: $animation-delay*2;
+        animation-delay: $animation-delay*2;
+      }
+
+      #progress-javascript{
+        -webkit-animation-name: progress-javascript;
+        animation-name: progress-javascript;
+        -webkit-animation-delay:$animation-delay*3;
+        animation-delay: $animation-delay*3;
+      }
+
+      #progress-php{
+        -webkit-animation-name: progress-php;
+        animation-name: progress-php;
+        -webkit-animation-delay: $animation-delay*4;
+        animation-delay: $animation-delay*4;
+      }
+
+      #progress-angular{
+        -webkit-animation-name: progress-angular;
+        animation-name: progress-angular;
+        -webkit-animation-delay: $animation-delay*5;
+        animation-delay: $animation-delay*5;
+      }
+    }// end bar-container
+  }
+}
+
+.progressred{background-color:$red;}
+.progressblue{background-color:$blue;}
+.progresspurple{background-color:$purple;}
+.progressorange{background-color:$orange;}
+.progressgreen{background-color:$green;}
+
+@-webkit-keyframes progress-html{0%{width: 0%;} 100%{ width: 100%;}}
+@-webkit-keyframes progress-css{0%{width: 0%;} 100%{ width: 90%;}}
+@-webkit-keyframes progress-javascript{0%{width: 0%;} 100%{ width: 70%;}}
+@-webkit-keyframes progress-php{0%{width: 0%;} 100%{ width: 55%;}}
+@-webkit-keyframes progress-angular{0%{width: 0%;} 100%{ width: 65%;}}
+
+@-moz-keyframes progress-html{0%{width: 0%;} 100%{ width: 100%;}}
+@-moz-keyframes progress-css{0%{width: 0%;} 100%{ width: 90%;}}
+@-moz-keyframes progress-javascript{0%{width: 0%;} 100%{ width: 70%;}}
+@-moz-keyframes progress-php{0%{width: 0%;} 100%{ width: 55%;}}
+@-moz-keyframes progress-angular{0%{width: 0%;} 100%{ width: 65%;}}
+
+@keyframes progress-html{0%{width: 0%;} 100%{ width: 100%;}}
+@keyframes progress-css{0%{width: 0%;} 100%{ width: 90%;}}
+@keyframes progress-javascript{0%{width: 0%;} 100%{ width: 70%;}}
+@keyframes progress-php{0%{width: 0%;} 100%{ width: 55%;}}
+@keyframes progress-angular{0%{width: 0%;} 100%{ width: 65%;}}
