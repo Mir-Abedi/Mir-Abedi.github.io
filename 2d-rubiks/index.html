@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D 2x2x2 Rubik's Cube</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+document.onkeydown = function (e) {
+    var keyCode = e.keyCode;
+    if (keyCode == 37) left_clicked();
+    if (keyCode == 38) up_clicked();
+    if (keyCode == 39) right_clicked();
+    if (keyCode == 40) down_clicked();
+};
+var arr1 = [3, 3, 3, 3];
+var arr2 = [2, 2, 2, 2];
+var arr3 = [6, 6, 6, 6];
+var arr4 = [5, 5, 5, 5];
+var arr5 = [4, 4, 4, 4];
+var arr6 = [1, 1, 1, 1];
+function left_clicked() {
+    turn_left();
+    render();
+}
+
+function right_clicked(){
+    turn_left();
+    turn_left();
+    turn_left();
+    render();
+}
+
+function up_clicked() {
+    turn_up();
+    render();
+}
+
+function down_clicked() {
+    turn_up();
+    turn_up();
+    turn_up();
+    render();
+}
+
+function col_up_clicked(col){
+    col_up(col);
+    render();
+}
+
+function col_down_clicked(col){
+    col_up(col);
+    col_up(col);
+    col_up(col);
+    render();
+}
+
+function row_right_clicked(row){
+    row_left(row);
+    row_left(row);
+    row_left(row);
+    render();
+}
+
+function row_left_clicked(row){
+    row_left(row);
+    render();
+}
+
+function solve_clicked(){
+    queue = [[[...arr1], [...arr2], [...arr3], [...arr4], [...arr5], [...arr6], "None", NaN]]
+    while (queue.length > 0) {
+        let state = queue.shift()
+
+    }
+}
+
+function is_answer(state){
+    for(let i = 0; i < 6; i++){
+        for (let j = 0; j < 4; j++) {
+            for (let k = j + 1; k < 4; k++) {
+                if (state[i][j] != state[i][k]) return false;
+            }
+        }
+    }
+    return true;
+}
+
+function new_state(state, action){
+    return [[...state[0]], [...state[1]], [...state[2]], [...state[3]], [...state[4]], [...state[5]], action, state]
+}
+
+function row_left(row){
+    var offset = 0;
+    if (row == 2) offset = 2;
+    for (let i = 0; i <= 1; i = i + 1) {
+        var temp = arr1[i + offset];
+        arr1[i + offset] = arr5[i + offset];
+        arr5[i + offset] = arr4[i + offset];
+        arr4[i + offset] = arr2[i + offset];
+        arr2[i + offset] = temp;
+    }
+}
+
+function col_up(col){
+    var offset = 0;
+    if (col == 2) {
+        offset = 1;
+    }
+    for (let i = 0; i <= 2; i = i + 2) {
+        var temp = arr1[i + offset];
+        arr1[i + offset] = arr6[i + offset];
+        arr6[i + offset] = arr4[i + offset];
+        arr4[i + offset] = arr3[i + offset];
+        arr3[i + offset] = temp;
+    }
+}
+
+function turn_left(){
+    var temp = arr1;
+    arr1 = arr5;
+    arr5 = arr4;
+    arr4 = arr2;
+    arr2 = temp;
+}
+
+function turn_up(){
+    var temp = arr1;
+    arr1 = arr6;
+    arr6 = arr4; 
+    arr4 = arr3; 
+    arr3 = temp;
+}
+
+function render() {
+    for (let i = 0; i <= 3; i++) {
+        document.getElementById("f" + i).style.backgroundColor = num_to_color(arr1[i]);
+        document.getElementById("t" + i).style.backgroundColor = num_to_color(arr3[i]);
+        document.getElementById("l" + i).style.backgroundColor = num_to_color(arr2[i]);
+    }
+}
+
+function num_to_color(i){
+    if (i == 1) return "white";
+    if (i == 2) return "green";
+    if (i == 3) return "orange";
+    if (i == 4) return "blue";
+    if (i == 5) return "red";
+    if (i == 6) return "yellow";
+    return "black";
+}
+    </script> 
+</head>
+<body>
+    <div class="cube">
+        <!-- Front face -->
+        <div class="face front">
+            <div class="cell" id="f0"></div>
+            <div class="cell" id="f1"></div>
+            <div class="cell" id="f2"></div>
+            <div class="cell" id="f3"></div>
+        </div>
+        <!-- Top face -->
+        <div class="face top">
+            <div class="cell" id="t0"></div>
+            <div class="cell" id="t1"></div>
+            <div class="cell" id="t2"></div>
+            <div class="cell" id="t3"></div>
+        </div>
+        <!-- Left face -->
+        <div class="face left">
+            <div class="cell" id="l0"></div>
+            <div class="cell" id="l1"></div>
+            <div class="cell" id="l2"></div>
+            <div class="cell" id="l3"></div>
+        </div>
+    </div>
+
+    <button class="button toleft" onclick="left_clicked()">left</button>
+    <button class="button toright" onclick="right_clicked()">right</button>
+    <button class="button toup" onclick="up_clicked()">up</button>
+    <button class="button todown" onclick="down_clicked()">down</button>
+
+    <button class="button arrow down" onclick="col_down_clicked(1)"><img src="assets/arrow.png" width="30px" height="30px"></button>
+    <button class="button arrow down" onclick="col_down_clicked(2)"><img src="assets/arrow.png" width="30px" height="30px"></button>
+    <button class="button arrow up"  onclick="col_up_clicked(1)"><img src="assets/arrow.png" width="30px" height="30px"></button>
+    <button class="button arrow up" onclick="col_up_clicked(2)"><img src="assets/arrow.png" width="30px" height="30px"></button>
+    <button class="button arrow right arrowright1" onclick="row_right_clicked(1)"><img src="assets/arrow.png" width="30px" height="30px"></button>
+    <button class="button arrow right arrowright2" onclick="row_right_clicked(2)"><img src="assets/arrow.png" width="30px" height="30px"></button>
+    <button class="button arrow arrowleft1" onclick="row_left_clicked(1)"><img src="assets/arrow.png" width="30px" height="30px"></button>
+    <button class="button arrow arrowleft2" onclick="row_left_clicked(2)"><img src="assets/arrow.png" width="30px" height="30px"></button>
+
+
+    <input class="name" placeholder="username">
+    <button class="button load" onclick="load_clicked()">load</button>
+    <button class="button save" onclick="save_clicked()">save</button>
+    <button class="button solve" onclick="solve_clicked()">solve</button>
+</body>
+</html>

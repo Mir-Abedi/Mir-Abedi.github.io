@@ -1,0 +1,169 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #333;
+    margin: 0;
+}
+
+.face {
+    display: grid;
+}
+
+.cell {
+    border: 1px solid #000;
+}
+
+.front .cell {
+    width: 50px;
+    height: 50px;
+    background-color: orange;
+}
+
+.top .cell {
+    width: 50px;
+    height: 30px;
+    background-color: yellow;
+    margin-right: 12px;
+}
+
+.left .cell {
+    width: 30px;
+    height: 50px;
+    background-color: green;
+}
+
+/* Positioning the faces */
+.front {
+    position: relative;
+    top: 100px;
+    left: 350px;
+    grid-template-columns: repeat(2, 50px);
+    grid-template-rows: repeat(2, 50px);
+    grid-column: 2 / 4;
+    grid-row: 2 / 4;
+}
+
+.top {
+    position: relative;
+    bottom: 62px;
+    left: 318px;
+    grid-template-columns: repeat(2, 50px);
+    grid-template-rows: repeat(2, 30px);
+    transform: skewX(45deg);
+    grid-column: 2 / 4;
+    grid-row: 1 / 2;
+}
+
+.left {
+    position: relative;
+    left: 288px;
+    bottom: 70px;
+    grid-template-columns: repeat(2, 30px);
+    grid-template-rows: repeat(2, 50px);
+    transform: skewY(45deg);
+    grid-column: 1 / 2;
+    grid-row: 2 / 4;
+}
+
+.button {
+    position: relative;
+    background-color: #333;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.toleft {
+    bottom: 40px;
+}
+
+.toright {
+    left: 450px;
+    bottom: 40px;
+}
+
+.toup {
+    bottom: 250px;
+    left: 150px;
+}
+
+.todown {
+    top: 200px;
+    left: 110px;
+}
+
+.arrow {
+    width: 50px;
+    height: 50px;
+    border: 0;
+
+}
+
+.down {
+    transform: rotate(270deg);
+    position: relative;
+    left: 10px;
+    bottom: 120px;
+}
+
+.up {
+    transform: rotate(90deg);
+    position: relative;
+    right: 25px;
+    top: 100px;
+}
+
+.right {
+    transform: rotate(180deg);
+}
+
+.arrowright1 {
+    position: relative;
+    right: 240px;
+    bottom: 70px;
+}
+
+.arrowright2 {
+    position: relative;
+    right: 290px;
+    bottom: 20px;
+}
+
+.arrowleft1 {
+    position: relative;
+    right: 110px;
+}
+
+.arrowleft2 {
+    position: relative;
+    right: 160px;
+    top: 50px;
+}
+
+.load{
+    position: relative;
+    bottom: 30px;
+    right: 20px;
+}
+
+.save{
+    position: relative;
+    bottom: 30px;
+    /* right: 130px; */
+}
+
+.name{
+    position: relative;
+    bottom: 100px;
+    left: 130px;
+    border-radius: 5%;
+}
+
+.solve{
+    position: relative;
+    right: 380px;
+    bottom: 250px;
+}
