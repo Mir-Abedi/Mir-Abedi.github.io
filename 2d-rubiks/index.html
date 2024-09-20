@@ -74,14 +74,14 @@ async function solve_clicked(){
     var server_response = await fetch(url, requestOptions).then((Response) => Response.text()).then((Response) => JSON.parse(Response)).catch((error) => disabled=false)
     var moves = server_response["moves"]
     if (server_response["ok"]) {
-        setTimeout(update_with_moves, 4000, moves, moves.length - 1)
+        setTimeout(update_with_moves, 4000, moves, 0)
     }
 }
 
 async function update_with_moves(moves, idx) {
     var ongoing_list = document.getElementsByClassName("ongoing")
     if (ongoing_list.length > 0) ongoing_list[0].classList.remove("ongoing")
-    if (idx == -1) {
+    if (idx == moves.length) {
         disabled = false
         return
     }
@@ -124,7 +124,7 @@ async function update_with_moves(moves, idx) {
     }
     document.getElementById("b" + moves[idx]).classList.add("ongoing")
     render()
-    setTimeout(update_with_moves, 1000, moves, idx - 1)
+    setTimeout(update_with_moves, 1000, moves, idx + 1)
 }
 
 function left_clicked() {
