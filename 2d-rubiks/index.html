@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <script>
 document.onkeydown = function (e) {
+    if (disabled) return
     var keyCode = e.keyCode;
     if (keyCode == 37) left_clicked();
     if (keyCode == 38) up_clicked();
@@ -19,12 +20,121 @@ var arr3 = [6, 6, 6, 6];
 var arr4 = [5, 5, 5, 5];
 var arr5 = [4, 4, 4, 4];
 var arr6 = [1, 1, 1, 1];
+var url = "https://script.google.com/macros/s/AKfycbwhwdNp357P1qIxeW4X4hDaw5jYYeGBA4YjByMrEJaA_vx19LYU5cPd4KH6fqcFVTJ5/exec"
+var disabled = false
+
+function load_clicked() {
+    if (disabled) return
+    var username = document.getElementById("un").value
+    if (username == "") return
+    const raw = JSON.stringify({"username": username, "method": "load"});
+    const requestOptions = {
+    method: "POST",
+    redirect: "follow",
+    body: raw
+    };
+    fetch(url, requestOptions)
+    .then((response) => response.text())
+    .then((Response) => JSON.parse(Response))
+    .then((Response) => {
+        if (Response["ok"]) {
+            arr1 = Response["data"]["1"]
+            arr2 = Response["data"]["2"]
+            arr3 = Response["data"]["3"]
+            arr4 = Response["data"]["4"]
+            arr5 = Response["data"]["5"]
+            arr6 = Response["data"]["6"]
+            render()
+        }
+    })
+}
+
+function save_clicked() {
+    if (disabled) return
+    var username = document.getElementById("un").value
+    if (username == "") return
+    const raw = JSON.stringify({"username": username, "method": "save", "1": arr1, "2": arr2, "3": arr3, "4": arr4, "5": arr5, "6": arr6});
+    const requestOptions = {
+    method: "POST",
+    redirect: "follow",
+    body: raw
+    };
+    fetch(url, requestOptions)
+}
+
+async function solve_clicked(){
+    if (disabled) return
+    disabled = true
+    const raw = JSON.stringify({"method": "solve", "1": arr1, "2": arr2, "3": arr3, "4": arr4, "5": arr5, "6": arr6});
+    const requestOptions = {
+    method: "POST",
+    redirect: "follow",
+    body: raw
+    };
+    var server_response = await fetch(url, requestOptions).then((Response) => Response.text()).then((Response) => JSON.parse(Response)).catch((error) => disabled=false)
+    var moves = server_response["moves"]
+    if (server_response["ok"]) {
+        setTimeout(update_with_moves, 4000, moves, moves.length - 1)
+    }
+}
+
+async function update_with_moves(moves, idx) {
+    var ongoing_list = document.getElementsByClassName("ongoing")
+    if (ongoing_list.length > 0) ongoing_list[0].classList.remove("ongoing")
+    if (idx == -1) {
+        disabled = false
+        return
+    }
+    if (moves[idx] == "1") {
+        row_left(1)
+    } else if (moves[idx] == "2") {
+        row_left(2)
+    } else if (moves[idx] == "3") {
+        row_left(1)
+        row_left(1)
+        row_left(1)
+    } else if (moves[idx] == "4") {
+        row_left(2)
+        row_left(2)
+        row_left(2)
+    } else if (moves[idx] == "5") {
+        col_up(1)
+        col_up(1)
+        col_up(1)
+    } else if (moves[idx] == "6") {
+        col_up(2)
+        col_up(2)
+        col_up(2)
+    } else if (moves[idx] == "7") {
+        col_up(1)
+    } else if (moves[idx] == "8") {
+        col_up(2)
+    } else if (moves[idx] == "9") {
+        turn_left()
+    } else if (moves[idx] == "10") {
+        turn_left()
+        turn_left()
+        turn_left()
+    } else if (moves[idx] == "11") {
+        turn_up()
+    } else if (moves[idx] == "12") {
+        turn_up()
+        turn_up()
+        turn_up()
+    }
+    document.getElementById("b" + moves[idx]).classList.add("ongoing")
+    render()
+    setTimeout(update_with_moves, 1000, moves, idx - 1)
+}
+
 function left_clicked() {
+    if (disabled) return
     turn_left();
     render();
 }
 
 function right_clicked(){
+    if (disabled) return
     turn_left();
     turn_left();
     turn_left();
@@ -32,11 +142,13 @@ function right_clicked(){
 }
 
 function up_clicked() {
+    if (disabled) return
     turn_up();
     render();
 }
 
 function down_clicked() {
+    if (disabled) return
     turn_up();
     turn_up();
     turn_up();
@@ -44,11 +156,13 @@ function down_clicked() {
 }
 
 function col_up_clicked(col){
+    if (disabled) return
     col_up(col);
     render();
 }
 
 function col_down_clicked(col){
+    if (disabled) return
     col_up(col);
     col_up(col);
     col_up(col);
@@ -56,6 +170,7 @@ function col_down_clicked(col){
 }
 
 function row_right_clicked(row){
+    if (disabled) return
     row_left(row);
     row_left(row);
     row_left(row);
@@ -63,31 +178,9 @@ function row_right_clicked(row){
 }
 
 function row_left_clicked(row){
+    if (disabled) return
     row_left(row);
     render();
-}
-
-function solve_clicked(){
-    queue = [[[...arr1], [...arr2], [...arr3], [...arr4], [...arr5], [...arr6], "None", NaN]]
-    while (queue.length > 0) {
-        let state = queue.shift()
-
-    }
-}
-
-function is_answer(state){
-    for(let i = 0; i < 6; i++){
-        for (let j = 0; j < 4; j++) {
-            for (let k = j + 1; k < 4; k++) {
-                if (state[i][j] != state[i][k]) return false;
-            }
-        }
-    }
-    return true;
-}
-
-function new_state(state, action){
-    return [[...state[0]], [...state[1]], [...state[2]], [...state[3]], [...state[4]], [...state[5]], action, state]
 }
 
 function row_left(row){
@@ -100,20 +193,61 @@ function row_left(row){
         arr4[i + offset] = arr2[i + offset];
         arr2[i + offset] = temp;
     }
+    if (row == 1) move_up_clockwise()
+    else move_down_clockwise()
 }
 
 function col_up(col){
     var offset = 0;
+    var offset4 = 1;
     if (col == 2) {
         offset = 1;
+        offset4 = 0;
     }
-    for (let i = 0; i <= 2; i = i + 2) {
-        var temp = arr1[i + offset];
-        arr1[i + offset] = arr6[i + offset];
-        arr6[i + offset] = arr4[i + offset];
-        arr4[i + offset] = arr3[i + offset];
-        arr3[i + offset] = temp;
-    }
+    var temp1 = arr1[0 + offset]
+    var temp2 = arr1[2 + offset]
+    arr1[0 + offset] = arr6[0 + offset]
+    arr1[2 + offset] = arr6[2 + offset]
+    arr6[0 + offset] = arr4[2 + offset4]
+    arr6[2 + offset] = arr4[0 + offset4]
+    arr4[0 + offset4] = arr3[2 + offset]
+    arr4[2 + offset4] = arr3[0 + offset]
+    arr3[0 + offset] = temp1
+    arr3[2 + offset] = temp2
+    if (col == 1) move_left_upward()
+    else move_right_upward()
+}
+
+function move_up_clockwise() {
+    var temp = arr3[1]
+    arr3[1] = arr3[0]
+    arr3[0] = arr3[2]
+    arr3[2] = arr3[3]
+    arr3[3] = temp
+}
+
+function move_down_clockwise() {
+    var temp = arr6[0]
+    arr6[0] = arr6[1]
+    arr6[1] = arr6[3]
+    arr6[3] = arr6[2]
+    arr6[2] = temp
+}
+
+function move_right_upward() {
+    var temp = arr5[0]
+    arr5[0] = arr5[2]
+    arr5[2] = arr5[3]
+    arr5[3] = arr5[1]
+    arr5[1] = temp
+}
+
+function move_left_upward() {
+    var temp = arr2[0]
+    arr2[0] = arr2[1]
+    arr2[1] = arr2[3]
+    arr2[3] = arr2[2]
+    arr2[2] = temp
 }
 
 function turn_left(){
@@ -122,14 +256,18 @@ function turn_left(){
     arr5 = arr4;
     arr4 = arr2;
     arr2 = temp;
+    move_up_clockwise()
+    move_down_clockwise()
 }
 
 function turn_up(){
     var temp = arr1;
-    arr1 = arr6;
-    arr6 = arr4; 
-    arr4 = arr3; 
+    arr1 = [...arr6];
+    for (var idx = 0; idx < 4; idx++) arr6[idx] = arr4[3 - idx]; 
+    for (var idx = 0; idx < 4; idx++) arr4[idx] = arr3[3 - idx]; 
     arr3 = temp;
+    move_left_upward()
+    move_right_upward()
 }
 
 function render() {
@@ -176,22 +314,22 @@ function num_to_color(i){
         </div>
     </div>
 
-    <button class="button toleft" onclick="left_clicked()">left</button>
-    <button class="button toright" onclick="right_clicked()">right</button>
-    <button class="button toup" onclick="up_clicked()">up</button>
-    <button class="button todown" onclick="down_clicked()">down</button>
+    <button id="b9" class="button toleft" onclick="left_clicked()">left</button>
+    <button id="b10" class="button toright" onclick="right_clicked()">right</button>
+    <button id="b11" class="button toup" onclick="up_clicked()">up</button>
+    <button id="b12" class="button todown" onclick="down_clicked()">down</button>
 
-    <button class="button arrow down" onclick="col_down_clicked(1)"><img src="assets/arrow.png" width="30px" height="30px"></button>
-    <button class="button arrow down" onclick="col_down_clicked(2)"><img src="assets/arrow.png" width="30px" height="30px"></button>
-    <button class="button arrow up"  onclick="col_up_clicked(1)"><img src="assets/arrow.png" width="30px" height="30px"></button>
-    <button class="button arrow up" onclick="col_up_clicked(2)"><img src="assets/arrow.png" width="30px" height="30px"></button>
-    <button class="button arrow right arrowright1" onclick="row_right_clicked(1)"><img src="assets/arrow.png" width="30px" height="30px"></button>
-    <button class="button arrow right arrowright2" onclick="row_right_clicked(2)"><img src="assets/arrow.png" width="30px" height="30px"></button>
-    <button class="button arrow arrowleft1" onclick="row_left_clicked(1)"><img src="assets/arrow.png" width="30px" height="30px"></button>
-    <button class="button arrow arrowleft2" onclick="row_left_clicked(2)"><img src="assets/arrow.png" width="30px" height="30px"></button>
+    <button id="b5" class="button arrow down" onclick="col_down_clicked(1)"><img src="assets/arrow.png" width="30px" height="30px"></button>
+    <button id="b6" class="button arrow down" onclick="col_down_clicked(2)"><img src="assets/arrow.png" width="30px" height="30px"></button>
+    <button id="b7" class="button arrow up"  onclick="col_up_clicked(1)"><img src="assets/arrow.png" width="30px" height="30px"></button>
+    <button id="b8" class="button arrow up" onclick="col_up_clicked(2)"><img src="assets/arrow.png" width="30px" height="30px"></button>
+    <button id="b3" class="button arrow right arrowright1" onclick="row_right_clicked(1)"><img src="assets/arrow.png" width="30px" height="30px"></button>
+    <button id="b4" class="button arrow right arrowright2" onclick="row_right_clicked(2)"><img src="assets/arrow.png" width="30px" height="30px"></button>
+    <button id="b1" class="button arrow arrowleft1" onclick="row_left_clicked(1)"><img src="assets/arrow.png" width="30px" height="30px"></button>
+    <button id="b2" class="button arrow arrowleft2" onclick="row_left_clicked(2)"><img src="assets/arrow.png" width="30px" height="30px"></button>
 
 
-    <input class="name" placeholder="username">
+    <input id="un" class="name" placeholder="username">
     <button class="button load" onclick="load_clicked()">load</button>
     <button class="button save" onclick="save_clicked()">save</button>
     <button class="button solve" onclick="solve_clicked()">solve</button>

@@ -167,3 +167,7 @@ body {
     right: 380px;
     bottom: 250px;
 }
+
+.ongoing {
+    background-color: red;
+}
