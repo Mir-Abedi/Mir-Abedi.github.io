@@ -1,20 +1,24 @@
 <script>
-    const ws = new WebSocket('ws://ce441-web.spchallenge.ir:8080/ws');
-    ws.onopen = () => {
-        console.log('WebSocket connection established');
-        ws.send('Hello Server!');
-    };
+    try{
+        const ws = new WebSocket('ws://ce441-web.spchallenge.ir:8080/ws');
+        ws.onopen = () => {
+            console.log('WebSocket connection established');
+            ws.send('Hello Server!');
+        };
 
-    ws.onmessage = (event) => {
-        console.log(event.data)
-    };
+        ws.onmessage = (event) => {
+            console.log(event.data)
+        };
 
-    ws.onerror = (error) => {
-        console.error('WebSocket Error:', error);
-    };
+        ws.onerror = (error) => {
+            console.error('WebSocket Error:', error);
+        };
 
-    ws.onclose = () => {
-        console.log('WebSocket connection closed');
-    };
+        ws.onclose = () => {
+            console.log('WebSocket connection closed');
+        };
+    } catch (error) {
+        console.log(error.message)
+    }
     
 </script>
