@@ -1,5 +1,7 @@
 let num1, num2;
 let mistakeCount = 0;
+let correctCount = 0;  // Add a counter for consecutive correct answers
+let total_correct = 0;
 
 function generateNumbers(prevN1 = 0, prevN2 = 0) {
     let n1 = Math.floor(Math.random() * 11) + 2;
@@ -23,13 +25,30 @@ function checkAnswer() {
     const correctAnswer = num1 * num2;
     const resultLabel = document.getElementById("result");
 
-    if (userAnswer === correctAnswer) {
+    if (document.getElementById("answer").value === "") {
+        resultLabel.textContent = `لطفا یک عدد وارد کنید.`;
+        resultLabel.style.color = "red";
+    } else if (isNaN(userAnswer)) {
+        resultLabel.textContent = `واقعا که! این چه عددی است؟`;
+        resultLabel.style.color = "red";
+    } else if (userAnswer === correctAnswer) {
         resultLabel.textContent = "درسته!";
         resultLabel.style.color = "green";
         mistakeCount = 0;
-        newQuestion();
+        correctCount += 1;  // Increment the correct answer counter
+        if (correctCount >= 5) {
+            triggerCelebration();  // Trigger celebration animation
+            correctCount = 0;  // Reset the counter
+            resultLabel.textContent = `عالی! جواب درست ${makeNumberFarsi(correctAnswer)} است.`;
+            setTimeout(() => {
+                resultLabel.textContent = "";
+            }, 3000);  // Keep the label for 3 seconds
+        } else {
+            newQuestion();
+        }
     } else {
         mistakeCount += 1;
+        correctCount = 0;  // Reset the correct answer counter on mistake
         if (mistakeCount >= 3) {
             resultLabel.textContent = `اشتباه! جواب درست ${makeNumberFarsi(correctAnswer)} است.`;
             resultLabel.style.color = "red";
@@ -53,6 +72,31 @@ function checkEnter(event) {
     if (event.key === "Enter") {
         checkAnswer();
     }
+}
+
+function triggerCelebration() {
+    const body = document.body;
+    body.classList.add("celebration");
+    createFireworks();  // Create fireworks
+    setTimeout(() => {
+        body.classList.remove("celebration");
+        removeFireworks();  // Remove fireworks after celebration
+    }, 3000);  // Celebration lasts for 3 seconds
+}
+
+function createFireworks() {
+    for (let i = 0; i < 20; i++) {
+        const firework = document.createElement("div");
+        firework.classList.add("firework");
+        firework.style.left = `${Math.random() * 100}%`;
+        firework.style.top = `${Math.random() * 100}%`;
+        document.body.appendChild(firework);
+    }
+}
+
+function removeFireworks() {
+    const fireworks = document.querySelectorAll(".firework");
+    fireworks.forEach(firework => firework.remove());
 }
 
 // Initialize the first question

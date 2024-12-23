@@ -54,3 +54,35 @@ body {
     font-size: 16px;
     margin-top: 10px;
 }
+
+@keyframes celebrationAnimation {
+    0% { background-color: #E0F7FA; }
+    25% { background-color: #FFEB3B; }
+    50% { background-color: #FFC107; }
+    75% { background-color: #FF9800; }
+    100% { background-color: #FF5722; }
+}
+
+body.celebration {
+    animation: celebrationAnimation 1s infinite;
+}
+
+.firework {
+    position: absolute;
+    width: 50px;  /* Increase width */
+    height: 50px;  /* Increase height */
+    background-color: #FFEB3B;
+    border-radius: 50%;
+    animation: fireworkAnimation 1s ease-out infinite;
+}
+
+@keyframes fireworkAnimation {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(3);
+        opacity: 0;
+    }
+}
