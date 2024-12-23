@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiplication Quiz</title>
+    <link rel="stylesheet" href="multiplication_app.css">
+</head>
+<body>
+    <div class="container">
+        <h1 id="question" class="question"></h1>
+        <input type="text" id="answer" class="answer" onkeypress="checkEnter(event)">
+        <button onclick="checkAnswer()" class="button button1">چک کن</button>
+        <button onclick="newQuestion()" class="button">سوال جدید</button>
+        <p id="result" class="result"></p>
+    </div>
+    <script src="multiplication_app.js"></script>
+</body>
+</html>
