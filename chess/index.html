@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .chessboard {
+            display: grid;
+            grid-template-columns: repeat(8, 60px);
+            grid-template-rows: repeat(8, 60px);
+            border: 2px solid #333;
+            margin-bottom: 20px;
+        }
+        .square {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            cursor: pointer;
+        }
+        .light {
+            background-color: #f0d9b5;
+        }
+        .dark {
+            background-color: #b58863;
+        }
+        .selected {
+            background-color: rgba(0, 255, 0, 0.5);
+        }
+        .possible-move {
+            background-color: rgba(0, 0, 255, 0.3);
+        }
+        .controls {
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 8px 16px;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+        .history {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 480px;
+        }
+        .status {
+            margin: 10px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chess Game</h1>
+    <div class="controls">
+        <button id="undoBtn" disabled>Undo Move</button>
+        <button id="resetBtn">Reset Board</button>
+        <button id="fenBtn">Export</button>
+    </div>
+    <div class="status" id="status">White's turn</div>
+    <div class="chessboard" id="chessboard"></div>
+    <div style="display: none;">
+        <h3>Current FEN:</h3>
+        <input type="text" id="fenDisplay" style="width: 480px;" readonly>
+    </div>
+    <div style="display: none;">
+        <h3>Move History:</h3>
+        <div class="history" id="moveHistory"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chessboard = document.getElementById('chessboard');
+            const fenDisplay = document.getElementById('fenDisplay');
+            const moveHistory = document.getElementById('moveHistory');
+            const undoBtn = document.getElementById('undoBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const fenBtn = document.getElementById('fenBtn');
+            const status = document.getElementById('status');
+            
+            let board = [];
+            let selectedSquare = null;
+            let possibleMoves = [];
+            let moveStack = [];
+            let currentFen = '';
+            let history = [];
+            let isUserTurn = true;
+            let currentColor = 'w'; // 'w' for white, 'b' for black
+
+            // Initialize the board
+            function initBoard() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const fenParam = urlParams.get('fen');
+                
+                if (fenParam) {
+                    currentFen = fenParam;
+                    const parts = currentFen.split(' ');
+                    currentColor = parts[1] || 'w';
+                } else {
+                    currentFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+                    currentColor = 'w';
+                }
+                
+                isUserTurn = currentColor === 'w';
+                updateStatus();
+                updateBoardFromFen(currentFen);
+                updateFenDisplay();
+                renderBoard();
+            }
+
+            // Update status display
+            function updateStatus() {
+                status.textContent = currentColor === 'w' ? "White's turn" : "Black's turn";
+            }
+
+            // Update board state from FEN
+            function updateBoardFromFen(fen) {
+                board = Array(8).fill().map(() => Array(8).fill(null));
+                const parts = fen.split(' ');
+                const position = parts[0];
+                
+                let row = 0;
+                let col = 0;
+                
+                for (const char of position) {
+                    if (char === '/') {
+                        row++;
+                        col = 0;
+                    } else if (isNaN(char)) {
+                        board[row][col] = char;
+                        col++;
+                    } else {
+                        col += parseInt(char, 10);
+                    }
+                }
+            }
+
+            // Generate FEN from board state
+            function generateFen() {
+                let fen = '';
+                let emptyCount = 0;
+                
+                for (let row = 0; row < 8; row++) {
+                    emptyCount = 0;
+                    
+                    for (let col = 0; col < 8; col++) {
+                        if (board[row][col] === null) {
+                            emptyCount++;
+                        } else {
+                            if (emptyCount > 0) {
+                                fen += emptyCount;
+                                emptyCount = 0;
+                            }
+                            fen += board[row][col];
+                        }
+                    }
+                    
+                    if (emptyCount > 0) {
+                        fen += emptyCount;
+                    }
+                    
+                    if (row < 7) {
+                        fen += '/';
+                    }
+                }
+                
+                // Add other FEN parts (turn, castling, en passant, halfmove, fullmove)
+                const parts = currentFen.split(' ');
+                fen += ' ' + currentColor;
+                
+                // Preserve castling rights, en passant, etc.
+                if (parts.length > 2) {
+                    fen += ' ' + parts[2]; // castling
+                    fen += ' ' + (parts.length > 3 ? parts[3] : '-'); // en passant
+                    fen += ' ' + (parts.length > 4 ? parts[4] : '0'); // halfmove
+                    fen += ' ' + (parts.length > 5 ? parts[5] : '1'); // fullmove
+                } else {
+                    fen += ' KQkq - 0 1';
+                }
+                
+                return fen;
+            }
+
+            // Update FEN display
+            function updateFenDisplay() {
+                fenDisplay.value = currentFen;
+            }
+
+            // Render the chessboard
+            function renderBoard() {
+                chessboard.innerHTML = '';
+                
+                for (let row = 0; row < 8; row++) {
+                    for (let col = 0; col < 8; col++) {
+                        const square = document.createElement('div');
+                        square.className = `square ${(row + col) % 2 === 0 ? 'light' : 'dark'}`;
+                        square.dataset.row = row;
+                        square.dataset.col = col;
+                        
+                        if (board[row][col]) {
+                            square.textContent = getPieceSymbol(board[row][col]);
+                        }
+                        
+                        // Highlight selected square
+                        if (selectedSquare && selectedSquare.row === row && selectedSquare.col === col) {
+                            square.classList.add('selected');
+                        }
+                        
+                        // Highlight possible moves
+                        if (possibleMoves.some(move => move.row === row && move.col === col)) {
+                            square.classList.add('possible-move');
+                        }
+                        
+                        square.addEventListener('click', () => handleSquareClick(row, col));
+                        chessboard.appendChild(square);
+                    }
+                }
+            }
+
+            // Get Unicode symbol for piece
+            function getPieceSymbol(piece) {
+                const symbols = {
+                    'P': '♙', 'N': '♘', 'B': '♗', 'R': '♖', 'Q': '♕', 'K': '♔',
+                    'p': '♟', 'n': '♞', 'b': '♝', 'r': '♜', 'q': '♛', 'k': '♚'
+                };
+                return symbols[piece];
+            }
+
+            // Handle square click
+            function handleSquareClick(row, col) {
+                if (!isUserTurn) return;
+                
+                const piece = board[row][col];
+                
+                // If no square is selected and the clicked square has a piece of the current turn's color
+                if (!selectedSquare && piece && isCurrentColorPiece(piece)) {
+                    selectedSquare = { row, col };
+                    possibleMoves = getPossibleMoves(row, col);
+                    renderBoard();
+                }
+                // If a square is already selected
+                else if (selectedSquare) {
+                    // If clicking on the same square, deselect it
+                    if (selectedSquare.row === row && selectedSquare.col === col) {
+                        selectedSquare = null;
+                        possibleMoves = [];
+                        renderBoard();
+                    }
+                    // If clicking on a possible move square, make the move
+                    else if (possibleMoves.some(move => move.row === row && move.col === col)) {
+                        makeMove(selectedSquare.row, selectedSquare.col, row, col);
+                    }
+                    // If clicking on another piece of the same color, select that piece instead
+                    else if (piece && isCurrentColorPiece(piece)) {
+                        selectedSquare = { row, col };
+                        possibleMoves = getPossibleMoves(row, col);
+                        renderBoard();
+                    }
+                }
+            }
+
+            // Check if piece belongs to the current player
+            function isCurrentColorPiece(piece) {
+                return (currentColor === 'w' && piece === piece.toUpperCase()) ||
+                       (currentColor === 'b' && piece === piece.toLowerCase());
+            }
+
+            // Get possible moves (simplified for demo)
+            function getPossibleMoves(row, col) {
+                const piece = board[row][col];
+                if (!piece) return [];
+                
+                const moves = [];
+                const directions = [];
+                
+                // Simplified movement rules for demo
+                switch (piece.toLowerCase()) {
+                    case 'p': // Pawn
+                        const forward = piece === 'P' ? -1 : 1;
+                        // Forward move
+                        if (isValidSquare(row + forward, col) && !board[row + forward][col]) {
+                            moves.push({ row: row + forward, col });
+                            // Double move from starting position
+                            const startRow = piece === 'P' ? 6 : 1;
+                            if (row === startRow && !board[row + 2 * forward][col] && !board[row + forward][col]) {
+                                moves.push({ row: row + 2 * forward, col });
+                            }
+                        }
+                        // Captures
+                        for (const captureCol of [col - 1, col + 1]) {
+                            if (isValidSquare(row + forward, captureCol) && 
+                                board[row + forward][captureCol] && 
+                                isOpponentPiece(piece, board[row + forward][captureCol])) {
+                                moves.push({ row: row + forward, col: captureCol });
+                            }
+                        }
+                        break;
+                    case 'n': // Knight
+                        const knightMoves = [
+                            { row: row - 2, col: col - 1 }, { row: row - 2, col: col + 1 },
+                            { row: row - 1, col: col - 2 }, { row: row - 1, col: col + 2 },
+                            { row: row + 1, col: col - 2 }, { row: row + 1, col: col + 2 },
+                            { row: row + 2, col: col - 1 }, { row: row + 2, col: col + 1 }
+                        ];
+                        for (const move of knightMoves) {
+                            if (isValidSquare(move.row, move.col) && 
+                                (!board[move.row][move.col] || isOpponentPiece(piece, board[move.row][move.col]))) {
+                                moves.push(move);
+                            }
+                        }
+                        break;
+                    case 'b': // Bishop
+                        directions.push(...[
+                            { dr: -1, dc: -1 }, { dr: -1, dc: 1 },
+                            { dr: 1, dc: -1 }, { dr: 1, dc: 1 }
+                        ]);
+                        break;
+                    case 'r': // Rook
+                        directions.push(...[
+                            { dr: -1, dc: 0 }, { dr: 1, dc: 0 },
+                            { dr: 0, dc: -1 }, { dr: 0, dc: 1 }
+                        ]);
+                        break;
+                    case 'q': // Queen
+                        directions.push(...[
+                            { dr: -1, dc: -1 }, { dr: -1, dc: 1 },
+                            { dr: 1, dc: -1 }, { dr: 1, dc: 1 },
+                            { dr: -1, dc: 0 }, { dr: 1, dc: 0 },
+                            { dr: 0, dc: -1 }, { dr: 0, dc: 1 }
+                        ]);
+                        break;
+                    case 'k': // King
+                        for (let dr = -1; dr <= 1; dr++) {
+                            for (let dc = -1; dc <= 1; dc++) {
+                                if (dr === 0 && dc === 0) continue;
+                                const newRow = row + dr;
+                                const newCol = col + dc;
+                                if (isValidSquare(newRow, newCol) && 
+                                    (!board[newRow][newCol] || isOpponentPiece(piece, board[newRow][newCol]))) {
+                                    moves.push({ row: newRow, col: newCol });
+                                }
+                            }
+                        }
+                        break;
+                }
+                
+                // Handle sliding pieces (bishop, rook, queen)
+                for (const dir of directions) {
+                    let newRow = row + dir.dr;
+                    let newCol = col + dir.dc;
+                    
+                    while (isValidSquare(newRow, newCol)) {
+                        if (!board[newRow][newCol]) {
+                            moves.push({ row: newRow, col: newCol });
+                        } else {
+                            if (isOpponentPiece(piece, board[newRow][newCol])) {
+                                moves.push({ row: newRow, col: newCol });
+                            }
+                            break;
+                        }
+                        
+                        newRow += dir.dr;
+                        newCol += dir.dc;
+                    }
+                }
+                
+                return moves;
+            }
+
+            // Check if square is valid
+            function isValidSquare(row, col) {
+                return row >= 0 && row < 8 && col >= 0 && col < 8;
+            }
+
+            // Check if piece is opponent's
+            function isOpponentPiece(piece, targetPiece) {
+                return (piece === piece.toLowerCase() && targetPiece === targetPiece.toUpperCase()) ||
+                       (piece === piece.toUpperCase() && targetPiece === targetPiece.toLowerCase());
+            }
+
+            // Make a move
+            function makeMove(fromRow, fromCol, toRow, toCol) {
+                // Save current state to history
+                const fromNotation = `${String.fromCharCode(97 + fromCol)}${8 - fromRow}`;
+                const toNotation = `${String.fromCharCode(97 + toCol)}${8 - toRow}`;
+                const moveNotation = `${fromNotation}-${toNotation}`;
+                
+                moveStack.push({
+                    fen: currentFen,
+                    move: moveNotation,
+                    color: currentColor
+                });
+                undoBtn.disabled = false;
+                
+                // Make the move
+                const piece = board[fromRow][fromCol];
+                board[fromRow][fromCol] = null;
+                board[toRow][toCol] = piece;
+                
+                // Simple pawn promotion for demo
+                if ((piece === 'P' && toRow === 0) || (piece === 'p' && toRow === 7)) {
+                    board[toRow][toCol] = piece === 'P' ? 'Q' : 'q';
+                }
+                
+                // Switch turns
+                currentColor = currentColor === 'w' ? 'b' : 'w';
+                isUserTurn = !isUserTurn;
+                
+                // Update FEN
+                currentFen = generateFen();
+                
+                // Update UI
+                selectedSquare = null;
+                possibleMoves = [];
+                updateStatus();
+                updateFenDisplay();
+                renderBoard();
+                
+                // Add to history
+                addToHistory(moveNotation);
+                
+                // If it's now the computer's turn, make a move
+                if (!isUserTurn) {
+                    setTimeout(makeComputerMove, 500);
+                }
+            }
+
+            // Make computer move using Stockfish v2 API
+            function makeComputerMove() {
+                undoBtn.disabled = true;
+                fetch(`https://stockfish.online/api/s/v2.php?fen=${encodeURIComponent(currentFen)}&depth=12`, {
+                    method: 'GET',
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.bestmove) {
+                        // Parse response like "bestmove b1c3 ponder h7h6"
+                        const match_promote = data.bestmove.match(/bestmove (\w{4})(\w{1})/);
+                        const match_move = data.bestmove.match(/bestmove (\w{4})/);
+                        if (match_promote && match_promote[1] && match_promote[2]) {
+                            const bestMove = match_promote[1];
+                            const fromCol = bestMove.charCodeAt(0) - 97;
+                            const fromRow = 8 - parseInt(bestMove.charAt(1));
+                            const toCol = bestMove.charCodeAt(2) - 97;
+                            const toRow = 8 - parseInt(bestMove.charAt(3));
+                            
+                            makeMove(fromRow, fromCol, toRow, toCol);
+                            board[toRow][toCol] = match_promote[2];
+                            renderBoard();
+                            return;
+                        } else if (match_move && match_move[1]) {
+                            const bestMove = match_move[1];
+                            const fromCol = bestMove.charCodeAt(0) - 97;
+                            const fromRow = 8 - parseInt(bestMove.charAt(1));
+                            const toCol = bestMove.charCodeAt(2) - 97;
+                            const toRow = 8 - parseInt(bestMove.charAt(3));
+                            
+                            makeMove(fromRow, fromCol, toRow, toCol);
+                            return;
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching computer move:', error);
+                    // Fallback to random move if API fails
+                    makeRandomMove();
+                });
+                undoBtn.disabled = false;
+            }
+
+            // Fallback: Make a random move (if API fails)
+            function makeRandomMove() {
+                const pieces = [];
+                const moves = [];
+                
+                // Find all pieces and their possible moves
+                for (let row = 0; row < 8; row++) {
+                    for (let col = 0; col < 8; col++) {
+                        const piece = board[row][col];
+                        if (piece && !isCurrentColorPiece(piece)) {
+                            const pieceMoves = getPossibleMoves(row, col);
+                            if (pieceMoves.length > 0) {
+                                pieces.push({ row, col });
+                                moves.push(pieceMoves);
+                            }
+                        }
+                    }
+                }
+                
+                if (pieces.length > 0) {
+                    const randomPieceIndex = Math.floor(Math.random() * pieces.length);
+                    const from = pieces[randomPieceIndex];
+                    const pieceMoves = moves[randomPieceIndex];
+                    const randomMoveIndex = Math.floor(Math.random() * pieceMoves.length);
+                    const to = pieceMoves[randomMoveIndex];
+                    
+                    makeMove(from.row, from.col, to.row, to.col);
+                } else {
+                    // No moves available (checkmate or stalemate)
+                    isUserTurn = !isUserTurn;
+                    currentColor = currentColor === 'w' ? 'b' : 'w';
+                    updateStatus();
+                }
+            }
+
+            // Add move to history
+            function addToHistory(move) {
+                const moveElement = document.createElement('div');
+                moveElement.textContent = `${history.length + 1}. ${move}`;
+                moveHistory.appendChild(moveElement);
+                history.push(move);
+                moveHistory.scrollTop = moveHistory.scrollHeight;
+            }
+
+            // Undo last move
+            function undoLastMove() {
+                if (moveStack.length === 0) return;
+                
+                const lastState = moveStack.pop();
+                currentFen = lastState.fen;
+                currentColor = lastState.color;
+                isUserTurn = currentColor === 'w';
+                
+                updateStatus();
+                updateBoardFromFen(currentFen);
+                updateFenDisplay();
+                renderBoard();
+                
+                // Remove from history
+                if (history.length > 0) {
+                    history.pop();
+                    moveHistory.removeChild(moveHistory.lastChild);
+                }
+                
+                if (moveStack.length === 0) {
+                    undoBtn.disabled = true;
+                }
+            }
+
+            function undoMove() {
+                if (moveStack.length > 0) {
+                    undoLastMove();
+                }
+                if (moveStack.length > 0) {
+                    undoLastMove();
+                }
+            }
+
+            // Reset board
+            function resetBoard() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const fenParam = urlParams.get('fen');
+                
+                if (fenParam) {
+                    currentFen = fenParam;
+                    const parts = currentFen.split(' ');
+                    currentColor = parts[1] || 'w';
+                } else {
+                    currentFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+                    currentColor = 'w';
+                }
+                
+                isUserTurn = currentColor === 'w';
+                moveStack = [];
+                history = [];
+                moveHistory.innerHTML = '';
+                undoBtn.disabled = true;
+                
+                updateStatus();
+                updateBoardFromFen(currentFen);
+                updateFenDisplay();
+                renderBoard();
+            }
+
+            function exportFen() {
+                const fen = generateFen();
+                fenDisplay.value = fen;
+
+                // Copy to clipboard
+                navigator.clipboard.writeText(fen)
+                    .then(() => {
+                        console.log('FEN copied to clipboard:', fen);
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy FEN:', err);
+                    });
+            }
+
+            // Event listeners
+            undoBtn.addEventListener('click', undoMove);
+            resetBtn.addEventListener('click', resetBoard);
+            fenBtn.addEventListener('click', exportFen);
+
+            // Initialize the game
+            initBoard();
+        });
+    </script>
+</body>
+</html>
