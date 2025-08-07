@@ -30,6 +30,98 @@
         .remove-person-button {
             margin-left: 10px;
         }
+        .toggler {
+            width: 72px;
+            margin: 13px 50px;
+        }
+
+        .toggler input {
+            display: none;
+        }
+
+        .toggler label {
+            position: relative;
+            border: 1px solid #d6d6d6;
+            border-radius: 36px;
+            background: #e4e8e8;
+            cursor: pointer;
+        }
+
+        .toggler label::after {
+            display: block;
+            border-radius: 100%;
+            background-color: #d7062a;
+            content: '';
+            animation-name: toggler-size;
+            animation-duration: 0.15s;
+            animation-timing-function: ease-out;
+            animation-direction: forwards;
+            animation-iteration-count: 1;
+            animation-play-state: running;
+        }
+
+        .toggler label::after, .toggler label .toggler-on, .toggler label .toggler-off {
+            position: absolute;
+            top: 50%;
+            left: 25%;
+            width: 26px;
+            height: 26px;
+            transform: translateY(-50%) translateX(-50%);
+            transition: left 0.15s ease-in-out, background-color 0.2s ease-out, width 0.15s ease-in-out, height 0.15s ease-in-out, opacity 0.15s ease-in-out;
+        }
+
+        .toggler input:checked + label::after, .toggler input:checked + label .toggler-on, .toggler input:checked + label .toggler-off {
+            left: 75%;
+        }
+
+        .toggler input:checked + label::after {
+            background-color: #50ac5d;
+            animation-name: toggler-size2;
+        }
+
+        .toggler .toggler-on, .toggler .toggler-off {
+            opacity: 1;
+            z-index: 2;
+        }
+
+        .toggler input:checked + label .toggler-off, .toggler input:not(:checked) + label .toggler-on {
+            width: 0;
+            height: 0;
+            opacity: 0;
+        }
+
+        .toggler .path {
+            fill: none;
+            stroke: #fefefe;
+            stroke-width: 7px;
+            stroke-linecap: round;
+            stroke-miterlimit: 10;
+        }
+
+        @keyframes toggler-size {
+        0%, 100% {
+            width: 26px;
+            height: 26px;
+        }
+
+        50% {
+            width: 20px;
+            height: 20px;
+        }
+        }
+
+        @keyframes toggler-size2 {
+        0%, 100% {
+            width: 26px;
+            height: 26px;
+        }
+
+        50% {
+            width: 20px;
+            height: 20px;
+        }
+        }
+ 
         /* Style for placeholder text in contenteditable */
         [contenteditable]:empty:before {
             content: attr(placeholder);
@@ -161,7 +253,7 @@
             const addItem = () => {
                 const name = `Item ${nextItemId}`;
                 const price = 10.00; // Default price
-                items.push({ id: nextItemId, name: name, price, count: 1 });
+                items.push({ id: nextItemId, name: name, price, count: 1 , forAll: false});
                 nextItemId++;
                 render();
             };
@@ -180,6 +272,13 @@
                     } else {
                         item[property] = value;
                     }
+                }
+            };
+
+            const toggledForAll = (itemId) => {
+                const item = items.find(i => i.id === itemId);
+                if (item) {
+                    item.forAll = !item.forAll;
                 }
                 console.log(items)
             };
@@ -334,7 +433,7 @@
                              <div contenteditable="true" placeholder="Item Name" onblur="updateItem(${item.id}, 'name', this.innerText)" class="font-bold text-lg text-slate-800 flex-grow outline-none focus:bg-slate-200 rounded -m-1 p-1">${item.name}</div>
                              <button onclick="deleteItem(${item.id})" class="text-red-500 hover:text-red-700 font-semibold text-sm ml-2">Remove</button>
                         </div>
-                        <div class="grid grid-cols-2 gap-4 mt-3">
+                        <div class="grid grid-cols-3 gap-4 mt-3">
                             <div>
                                 <label class="text-sm font-medium text-slate-500">Price</label>
                                 <input type="number" value="${item.price}" oninput="updateItem(${item.id}, 'price', this.value)" class="w-full mt-1 bg-slate-100 border border-slate-200 rounded-md py-1.5 px-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
@@ -342,6 +441,21 @@
                             <div>
                                 <label class="text-sm font-medium text-slate-500">Total Count</label>
                                 <input type="number" value="${item.count}" oninput="updateItem(${item.id}, 'count', this.value)" class="w-full mt-1 bg-slate-100 border border-slate-200 rounded-md py-1.5 px-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-slate-500">For all</label>
+                                <div class="toggler">
+                                    <input id="toggler-1" name="toggler-1" type="checkbox" ${item.forAll?"checked":""} oninput="toggledForAll(${item.id})">
+                                    <label for="toggler-1">
+                                        <svg class="toggler-on" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                                            <polyline class="path check" points="100.2,40.2 51.5,88.8 29.8,67.5"></polyline>
+                                        </svg>
+                                        <svg class="toggler-off" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                                            <line class="path line" x1="34.4" y1="34.4" x2="95.8" y2="95.8"></line>
+                                            <line class="path line" x1="95.8" y1="34.4" x2="34.4" y2="95.8"></line>
+                                        </svg>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -369,7 +483,7 @@
                             </summary>
                             <div class="mt-4 border-t border-slate-200 pt-4 space-y-3">
                                 <h4 class="font-semibold text-slate-600">Item Usage:</h4>
-                                ${items.length > 0 ? items.map(item => {
+                                ${items.filter(item => !item.forAll).length > 0 ? items.filter(item => !item.forAll).map(item => {
                                     const key = `p${person.id}-i${item.id}`;
                                     const value = usage[key] || '';
                                     return `
@@ -424,13 +538,13 @@
                 let validationWarnings = [];
                 
                 // 1. Validate that usage sums match item counts
-                items.forEach(item => {
+                items.filter(item => !item.forAll).forEach(item => {
                     const totalUsed = people.reduce((sum, person) => {
                         const key = `p${person.id}-i${item.id}`;
                         return sum + (usage[key] || 0);
                     }, 0);
 
-                    if (Math.abs(totalUsed - item.count) > 0.001) { // Use tolerance for float comparison
+                    if (Math.abs(totalUsed - item.count) > 0.01) { // Use tolerance for float comparison
                         const message = `For <strong>${item.name}</strong>, total count is ${item.count}, but sum of usage is ${totalUsed.toFixed(2)}.`;
                         validationWarnings.push(message);
                     }
@@ -458,10 +572,9 @@
                 const personTotals = people.map(person => ({ ...person, total: 0 }));
                 let grandSubtotal = 0;
 
-                items.forEach(item => {
-                    if (item.count <= 0) return; // Avoid division by zero or negative counts
-                    const pricePerUnit = item.price / item.count;
-                    grandSubtotal += item.price;
+                items.filter(item => !item.forAll).forEach(item => {
+                    const pricePerUnit = item.price;
+                    grandSubtotal += item.price * item.count;
                     
                     people.forEach(person => {
                         const key = `p${person.id}-i${item.id}`;
@@ -473,6 +586,17 @@
                     });
                 });
 
+                items.filter(item => item.forAll).forEach(item => {
+                    const totalItemPrice = item.price * item.count;
+                    grandSubtotal += totalItemPrice;
+                    if (personTotals.length == 0) {
+                        return;
+                    }
+                    personTotals.forEach(person => {
+                        person.total += totalItemPrice / personTotals.length
+                    })
+                })
+
                 // 3. Calculate tax
                 const taxPercentage = parseFloat(taxInput.value) || 10;
                 const totalTax = grandSubtotal * (taxPercentage / 100);
@@ -482,8 +606,9 @@
                 resultsHTML += '<div class="space-y-2">';
 
                 personTotals.forEach(p => {
-                    const taxShare = grandSubtotal > 0 ? (p.total / grandSubtotal) * totalTax : 0;
+                    const taxShare = (p.total * taxPercentage / 100);
                     const finalAmount = p.total + taxShare;
+                    
                     resultsHTML += `
                         <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
                             <span class="font-semibold text-slate-800">${p.name}</span>
@@ -523,6 +648,7 @@
             window.updateUsage = updateUsage;
             window.deletePerson = deletePerson;
             window.deleteItem = deleteItem;
+            window.toggledForAll = toggledForAll;
 
             // --- INITIALIZATION ---
             render();
