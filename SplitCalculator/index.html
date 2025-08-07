@@ -478,7 +478,7 @@
                 });
 
                 // 3. Calculate tax
-                const taxPercentage = parseFloat(taxInput.value) || 0;
+                const taxPercentage = parseFloat(taxInput.value) || 10;
                 const totalTax = grandSubtotal * (taxPercentage / 100);
 
                 // 4. Display final results
@@ -492,7 +492,7 @@
                         <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
                             <span class="font-semibold text-slate-800">${p.name}</span>
                             <div class="text-right">
-                                <span class="font-bold text-lg text-sky-700">${finalAmount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
+                                <span class="font-bold text-lg text-sky-700">${finalAmount.toLocaleString('en-US')}</span>
                                 <div class="text-xs text-slate-500">Subtotal: ${p.total.toFixed(2)} + Tax: ${taxShare.toFixed(2)}</div>
                             </div>
                         </div>
@@ -505,7 +505,7 @@
                 resultsHTML += `
                     <div class="mt-4 pt-4 border-t-2 border-slate-200 flex justify-between items-center">
                         <span class="text-xl font-bold text-slate-900">Grand Total</span>
-                        <span class="text-xl font-bold text-slate-900">${finalGrandTotal.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
+                        <span class="text-xl font-bold text-slate-900">${finalGrandTotal.toLocaleString('en-US')}</span>
                     </div>
                 `;
 
