@@ -432,11 +432,7 @@
 
                     if (Math.abs(totalUsed - item.count) > 0.001) { // Use tolerance for float comparison
                         const message = `For <strong>${item.name}</strong>, total count is ${item.count}, but sum of usage is ${totalUsed.toFixed(2)}.`;
-                        if (totalUsed > item.count) {
-                            validationErrors.push(message);
-                        } else {
-                            validationWarnings.push(message);
-                        }
+                        validationWarnings.push(message);
                     }
                 });
 
