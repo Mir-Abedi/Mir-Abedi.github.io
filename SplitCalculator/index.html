@@ -31,8 +31,6 @@
             margin-left: 10px;
         }
         .toggler {
-            width: 72px;
-            margin: 13px 50px;
         }
 
         .toggler input {
@@ -70,6 +68,10 @@
             transition: left 0.15s ease-in-out, background-color 0.2s ease-out, width 0.15s ease-in-out, height 0.15s ease-in-out, opacity 0.15s ease-in-out;
         }
 
+        .toggler label {
+            top: -30%;
+        }
+
         .toggler input:checked + label::after, .toggler input:checked + label .toggler-on, .toggler input:checked + label .toggler-off {
             left: 75%;
         }
@@ -96,6 +98,12 @@
             stroke-width: 7px;
             stroke-linecap: round;
             stroke-miterlimit: 10;
+        }
+        .item-detail-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
         }
 
         @keyframes toggler-size {
@@ -434,15 +442,15 @@
                              <button onclick="deleteItem(${item.id})" class="text-red-500 hover:text-red-700 font-semibold text-sm ml-2">Remove</button>
                         </div>
                         <div class="grid grid-cols-3 gap-4 mt-3">
-                            <div>
+                            <div class="item-detail-col">
                                 <label class="text-sm font-medium text-slate-500">Price</label>
                                 <input type="number" value="${item.price}" oninput="updateItem(${item.id}, 'price', this.value)" class="w-full mt-1 bg-slate-100 border border-slate-200 rounded-md py-1.5 px-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
                             </div>
-                            <div>
+                            <div class="item-detail-col">
                                 <label class="text-sm font-medium text-slate-500">Total Count</label>
                                 <input type="number" value="${item.count}" oninput="updateItem(${item.id}, 'count', this.value)" class="w-full mt-1 bg-slate-100 border border-slate-200 rounded-md py-1.5 px-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
                             </div>
-                            <div>
+                            <div class="item-detail-col">
                                 <label class="text-sm font-medium text-slate-500">For all</label>
                                 <div class="toggler">
                                     <input id="toggler-1" name="toggler-1" type="checkbox" ${item.forAll?"checked":""} oninput="toggledForAll(${item.id})">
