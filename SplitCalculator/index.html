@@ -453,8 +453,8 @@
                             <div class="item-detail-col">
                                 <label class="text-sm font-medium text-slate-500">For all</label>
                                 <div class="toggler">
-                                    <input id="toggler-1" name="toggler-1" type="checkbox" ${item.forAll?"checked":""} oninput="toggledForAll(${item.id})">
-                                    <label for="toggler-1">
+                                    <input id="toggler-${item.id}" name="toggler-${item.id}" type="checkbox" ${item.forAll?"checked":""} oninput="toggledForAll(${item.id})">
+                                    <label for="toggler-${item.id}">
                                         <svg class="toggler-on" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
                                             <polyline class="path check" points="100.2,40.2 51.5,88.8 29.8,67.5"></polyline>
                                         </svg>
