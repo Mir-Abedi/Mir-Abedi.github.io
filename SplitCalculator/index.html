@@ -117,6 +117,7 @@
             let usage = {}; // key: `p${person.id}-i${item.id}`, value: quantity
             let nextPersonId = 1;
             let nextItemId = 1;
+            let toggle_view = "items"
 
             // --- DOM ELEMENT REFERENCES ---
             const addPersonBtn = document.getElementById('add-person-btn');
@@ -177,7 +178,7 @@
                         item[property] = value;
                     }
                 }
-                // No re-render needed for input changes, but you might want it for validation later
+                render()
             };
             
             /**
@@ -258,7 +259,7 @@
                 renderDesktopTable();
                 renderMobileItems();
                 renderMobilePeople();
-                updateMobileToggle();
+                updateMobileToggle(toggle_view);
             };
 
             /**
@@ -384,7 +385,8 @@
              * Updates the active state of the mobile view toggle and controls Add button visibility
              */
             const updateMobileToggle = (view = 'items') => {
-                 if (view === 'items') {
+                toggle_view = view;
+                if (view === 'items') {
                     toggleItemsBtn.classList.add('bg-white', 'text-sky-600', 'shadow');
                     toggleItemsBtn.classList.remove('text-slate-600');
                     togglePeopleBtn.classList.remove('bg-white', 'text-sky-600', 'shadow');
