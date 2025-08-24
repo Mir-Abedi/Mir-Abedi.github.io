@@ -199,7 +199,7 @@
                 <div class="flex flex-col sm:flex-row items-center gap-4">
                     <div class="relative w-full sm:w-auto flex-grow">
                         <label for="tax-input" class="absolute -top-2 left-2 inline-block bg-white px-1 text-xs font-medium text-slate-500">Tax (%)</label>
-                        <input type="number" id="tax-input" placeholder="10" class="w-full px-3 py-2 text-slate-900 bg-transparent border border-slate-300 rounded-md focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition">
+                        <input type="number" id="tax-input" placeholder="0" class="w-full px-3 py-2 text-slate-900 bg-transparent border border-slate-300 rounded-md focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition">
                     </div>
                     <button id="calculate-btn" class="w-full sm:w-auto bg-green-600 text-white font-bold py-2.5 px-8 rounded-lg shadow-md hover:bg-green-700 transition-all duration-300 transform hover:scale-105">
                         Calculate
@@ -606,7 +606,7 @@
                 })
 
                 // 3. Calculate tax
-                const taxPercentage = parseFloat(taxInput.value) || 10;
+                const taxPercentage = (taxInput.value === "" || taxInput.value === null) ? 0 : parseFloat(taxInput.value);
                 const totalTax = grandSubtotal * (taxPercentage / 100);
 
                 // 4. Display final results
@@ -622,7 +622,7 @@
                             <span class="font-semibold text-slate-800">${p.name}</span>
                             <div class="text-right">
                                 <span class="font-bold text-lg text-sky-700">${finalAmount.toLocaleString('en-US')}</span>
-                                <div class="text-xs text-slate-500">Subtotal: ${p.total.toFixed(2)} + Tax: ${taxShare.toFixed(2)}</div>
+                                ${taxShare > 0 ? '<div class="text-xs text-slate-500">Subtotal: ' + p.total.toFixed(2) + ' + Tax: ' + taxShare.toFixed(2) + '</div>' : ''}
                             </div>
                         </div>
                     `;
