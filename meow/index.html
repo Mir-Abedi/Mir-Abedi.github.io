@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unknown Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        
+        <!-- Dialogue Modal -->
+        <div id="dialogueModal" class="modal">
+            <div class="modal-content dialogue-box">
+                <img id="girlfriendPortrait" class="portrait" src="" alt="Girlfriend">
+                <p id="dialogueText"></p>
+                <button id="continueBtn" class="game-btn">Continue</button>
+            </div>
+        </div>
+
+        <!-- Shop Modal -->
+        <div id="shopModal" class="modal">
+            <div class="modal-content shop-box">
+                <h2 id="shopTitle"></h2>
+                <div id="shopItem" class="shop-item"></div>
+                <button id="buyBtn" class="game-btn">Buy</button>
+                <button id="closeShopBtn" class="game-btn secondary">Close</button>
+            </div>
+        </div>
+
+        <!-- Proposal Modal -->
+        <div id="proposalModal" class="modal">
+            <div class="modal-content proposal-box">
+                <div class="hearts-container">
+                    <span class="heart">💕</span>
+                    <span class="heart">❤️</span>
+                    <span class="heart">💖</span>
+                    <span class="heart">💗</span>
+                    <span class="heart">💕</span>
+                </div>
+                <h1 id="proposalQuestion">Will you be my Valentine? 💝</h1>
+                <div id="proposalButtons" class="button-group">
+                    <button id="yesBtn" class="game-btn">Yes ❤️</button>
+                    <button id="noBtn" class="game-btn secondary">No 💔</button>
+                </div>
+                <div id="saveGameSection" class="save-section" style="display: none;">
+                    <p class="celebration">Do you want to save the game?</p>
+                    <div class="button-group">
+                        <button id="saveYesBtn" class="game-btn">Yes 💾</button>
+                        <button id="saveNoBtn" class="game-btn secondary">No</button>
+                    </div>
+                </div>
+                <div id="finalMessage" class="final-message" style="display: none;">
+                    <p class="celebration">✨ Forever saved you in my heart ✨</p>
+                    <p>Happy Valentine's Day! 🌹</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div id="instructions">
+            <p>Use <strong>Arrow Keys</strong> or <strong>WASD</strong> to move</p>
+            <p>Approach your girlfriend to interact 💕</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
